@@ -1,0 +1,52 @@
+1. SELECT * FROM employees WHERE location_id = 1700;
+2. SELECT * FROM employees WHERE location_id <> 1700;
+3. SELECT * FROM employees ORDER BY salary DESC LIMIT 1;
+4. SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees);
+5. SELECT department_id, department_name FROM departments WHERE department_id IN (SELECT department_id FROM employees WHERE salary > 10000);
+6. SELECT department_id, department_name FROM departments WHERE department_id NOT IN (SELECT department_id FROM employees WHERE salary > 10000);
+7. SELECT * FROM employees WHERE salary > (SELECT MIN(salary) FROM employees);
+8. SELECT * FROM employees WHERE salary >= (SELECT MAX(salary) FROM employees); 
+9. SELECT AVG(avg_salary) FROM (SELECT AVG(salary) AS avg_salary FROM employees GROUP BY department_id) AS department_avg_salaries;
+10. SELECT employee_id, salary, (SELECT AVG(salary) FROM employees) AS avg_salary, salary - (SELECT AVG(salary) FROM employees) AS salary_difference FROM employees;
+11. SELECT * FROM employees e1 WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e1.department_id = e2.department_id);
+12. SELECT * FROM employees WHERE employee_id NOT IN (SELECT employee_id FROM dependents); 
+13. SELECT e.first_name, e.last_name, d.department_name FROM employees e JOIN departments d ON e.department_id = d.department_id WHERE d.department_id IN (1, 2, 3);
+14. SELECT e.first_name, e.last_name, j.job_title, d.department_name FROM employees e JOIN departments d ON e.department_id = d.department_id JOIN jobs j ON e.job_id = j.job_id WHERE d.department_id IN (1, 2, 3) AND e.salary > 10000;
+15. SELECT department_name, street_address, postal_code, country_name, region_name FROM departments;
+16. SELECT e.first_name, e.last_name, e.department_id, d.department_name FROM employees e LEFT JOIN departments d ON e.department_id = d.department_id;
+17. SELECT first_name, last_name, department, city, state_province FROM employees WHERE first_name LIKE '%Z%';
+18. SELECT d.department_name, e.first_name, e.last_name, e.department_id FROM departments d LEFT JOIN employees e ON d.department_id = e.department_id;
+19. SELECT e1.first_name AS employee_name, e2.first_name AS manager_name FROM employees e1 LEFT JOIN employees e2 ON e1.manager_id = e2.employee_id;
+20. SELECT e.first_name, e.last_name, e.department_id FROM employees e JOIN employees t ON e.department_id = t.department_id WHERE t.last_name = 'Taylor'; 
+21. SELECT j.job_title, e.first_name || ' ' || e.last_name AS employee_name, (j.max_salary - e.salary) AS salary_difference FROM employees e JOIN jobs j ON e.job_id = j.job_id;
+22. SELECT d.department_name, AVG(e.salary) AS average_salary, COUNT(e.commission_pct) AS employees_with_commission FROM departments d LEFT JOIN employees e ON d.department_id = e.department_id GROUP BY d.department_name;
+23. CREATE VIEW department_employees_delhi AS
+SELECT
+    e.first_name || ' ' || e.last_name AS employee_name,
+    e.employee_id,
+    e.phone_number,
+    j.job_title,
+    d.department_name,
+    m.first_name || ' ' || m.last_name AS manager_name
+FROM
+    employees e
+JOIN
+    departments d ON e.department_id = d.department_id
+JOIN
+    jobs j ON e.job_id = j.job_id
+LEFT JOIN
+    employees m ON e.manager_id = m.employee_id
+WHERE
+    d.location_id IN (SELECT location_id FROM locations WHERE city = 'Delhi');
+
+SELECT * FROM department_employees_delhi;
+24 .SELECT
+    employee_name
+FROM
+    department_employees_delhi
+WHERE
+    job_title = 'Manager' AND department_name = 'Finance';
+25. Updating the phone number of an employee in the view is possible if the view is created without aggregations, group by or distinct clauses and if it includes the necessary columns from the underlying table.
+26. SELECT * FROM employees WHERE employee_id NOT IN (SELECT employee_id FROM dependents);
+27. SELECT * FROM employees WHERE manager_id = 101 UNION SELECT * FROM employees WHERE manager_id = 201;
+28. SELECT * FROM employees WHERE employee_id IN (SELECT employee_id FROM dependents);
